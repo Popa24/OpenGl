@@ -4,12 +4,14 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
+#include <string>
+
 namespace gps {
     
     enum MOVE_DIRECTION {MOVE_FORWARD, MOVE_BACKWARD, MOVE_RIGHT, MOVE_LEFT};
     
-    class Camera {
-
+    class Camera
+    {
     public:
         //Camera constructor
         Camera(glm::vec3 cameraPosition, glm::vec3 cameraTarget, glm::vec3 cameraUp);
@@ -28,7 +30,8 @@ namespace gps {
         glm::vec3 cameraFrontDirection;
         glm::vec3 cameraRightDirection;
         glm::vec3 cameraUpDirection;
-    };    
+    };
+    
 }
 
 #endif /* Camera_hpp */

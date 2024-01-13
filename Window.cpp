@@ -13,16 +13,13 @@ namespace gps {
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        //window scaling for HiDPI displays
-        glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
-
-        //for sRBG framebuffer
+        // for sRGB framebuffer
         glfwWindowHint(GLFW_SRGB_CAPABLE, GLFW_TRUE);
 
-        //for antialising
+        // for multisampling/antialising
         glfwWindowHint(GLFW_SAMPLES, 4);
 
-        this->window = glfwCreateWindow(width, height, title, NULL, NULL);
+        this->window = glfwCreateWindow(width, height, title, glfwGetPrimaryMonitor(), NULL);
         if (!this->window) {
             throw std::runtime_error("Could not create GLFW3 window!");
         }
@@ -31,11 +28,9 @@ namespace gps {
 
         glfwSwapInterval(1);
 
-#if not defined (__APPLE__)
         // start GLEW extension handler
         glewExperimental = GL_TRUE;
         glewInit();
-#endif
 
         // get version info
         const GLubyte* renderer = glGetString(GL_RENDERER); // get renderer string

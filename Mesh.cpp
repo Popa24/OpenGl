@@ -2,8 +2,8 @@
 namespace gps {
 
 	/* Mesh Constructor */
-	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures) {
-
+	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures)
+	{
 		this->vertices = vertices;
 		this->indices = indices;
 		this->textures = textures;
@@ -16,24 +16,24 @@ namespace gps {
 	}
 
 	/* Mesh drawing function - also applies associated textures */
-	void Mesh::Draw(gps::Shader shader)	{
-
+	void Mesh::Draw(gps::Shader shader)
+	{
 		shader.useShaderProgram();
 
 		//set textures
-		for (GLuint i = 0; i < textures.size(); i++) {
-
+		for (GLuint i = 0; i < textures.size(); i++)
+		{
 			glActiveTexture(GL_TEXTURE0 + i);
 			glUniform1i(glGetUniformLocation(shader.shaderProgram, this->textures[i].type.c_str()), i);
 			glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
 		}
 
 		glBindVertexArray(this->buffers.VAO);
-		glDrawElements(GL_TRIANGLES, (GLsizei)this->indices.size(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
-        for(GLuint i = 0; i < this->textures.size(); i++) {
-
+        for(GLuint i = 0; i < this->textures.size(); i++)
+        {
             glActiveTexture(GL_TEXTURE0 + i);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
@@ -41,8 +41,7 @@ namespace gps {
     }
 
 	// Initializes all the buffer objects/arrays
-	void Mesh::setupMesh() {
-
+	void Mesh::setupMesh(){
 		// Create buffers/arrays
 		glGenVertexArrays(1, &this->buffers.VAO);
 		glGenBuffers(1, &this->buffers.VBO);

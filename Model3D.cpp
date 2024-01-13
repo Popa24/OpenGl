@@ -2,26 +2,26 @@
 
 namespace gps {
 
-	void Model3D::LoadModel(std::string fileName) {
-
+	void Model3D::LoadModel(std::string fileName)
+	{
         std::string basePath = fileName.substr(0, fileName.find_last_of('/')) + "/";
 		ReadOBJ(fileName, basePath);
 	}
 
-    void Model3D::LoadModel(std::string fileName, std::string basePath)	{
-
+    void Model3D::LoadModel(std::string fileName, std::string basePath)
+	{
 		ReadOBJ(fileName, basePath);
 	}
 
 	// Draw each mesh from the model
-	void Model3D::Draw(gps::Shader shaderProgram) {
-
+	void Model3D::Draw(gps::Shader shaderProgram)
+	{
 		for (int i = 0; i < meshes.size(); i++)
 			meshes[i].Draw(shaderProgram);
 	}
 
 	// Does the parsing of the .obj file and fills in the data structure
-	void Model3D::ReadOBJ(std::string fileName, std::string basePath) {
+	void Model3D::ReadOBJ(std::string fileName, std::string basePath){
 
         std::cout << "Loading : " << fileName << std::endl;
 		tinyobj::attrib_t attrib;
@@ -32,14 +32,11 @@ namespace gps {
 		std::string err;
 		bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, fileName.c_str(), basePath.c_str(), GL_TRUE);
 
-		if (!err.empty()) {
-
-			// `err` may contain warning message.
+		if (!err.empty()) { // `err` may contain warning message.
 			std::cerr << err << std::endl;
 		}
 
 		if (!ret) {
-
 			exit(1);
 		}
 
@@ -48,7 +45,6 @@ namespace gps {
 
 		// Loop over shapes
 		for (size_t s = 0; s < shapes.size(); s++) {
-
 			std::vector<gps::Vertex> vertices;
 			std::vector<GLuint> indices;
 			std::vector<gps::Texture> textures;
@@ -56,7 +52,6 @@ namespace gps {
 			// Loop over faces(polygon)
 			size_t index_offset = 0;
 			for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
-
 				int fv = shapes[s].mesh.num_face_vertices[f];
 
 				//gps::Texture currentTexture = LoadTexture("index1.png", "ambientTexture");
@@ -64,7 +59,6 @@ namespace gps {
 
 				// Loop over vertices in the face.
 				for (size_t v = 0; v < fv; v++) {
-
 					// access to vertex
 					tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
 
@@ -76,9 +70,7 @@ namespace gps {
 					float nz = attrib.normals[3 * idx.normal_index + 2];
 					float tx = 0.0f;
 					float ty = 0.0f;
-
 					if (idx.texcoord_index != -1) {
-
 						tx = attrib.texcoords[2 * idx.texcoord_index + 0];
 						ty = attrib.texcoords[2 * idx.texcoord_index + 1];
 					}
@@ -94,7 +86,7 @@ namespace gps {
 
 					vertices.push_back(currentVertex);
 
-					indices.push_back((GLuint)(index_offset + v));
+					indices.push_back(index_offset + v);
 				}
 
 				index_offset += fv;
@@ -102,13 +94,10 @@ namespace gps {
 
 			// get material id
 			// Only try to read materials if the .mtl file is present
-			size_t a = shapes[s].mesh.material_ids.size();
-
+			int a = shapes[s].mesh.material_ids.size();
 			if (a > 0 && materials.size()>0) {
-
 				materialId = shapes[s].mesh.material_ids[0];
 				if (materialId != -1) {
-
 					gps::Material currentMaterial;
 					currentMaterial.ambient = glm::vec3(materials[materialId].ambient[0], materials[materialId].ambient[1], materials[materialId].ambient[2]);
 					currentMaterial.diffuse = glm::vec3(materials[materialId].diffuse[0], materials[materialId].diffuse[1], materials[materialId].diffuse[2]);
@@ -116,9 +105,8 @@ namespace gps {
 
 					//ambient texture
 					std::string ambientTexturePath = materials[materialId].ambient_texname;
-
-					if (!ambientTexturePath.empty()) {
-
+					if (!ambientTexturePath.empty())
+					{
 						gps::Texture currentTexture;
 						currentTexture = LoadTexture(basePath + ambientTexturePath, "ambientTexture");
 						textures.push_back(currentTexture);
@@ -126,9 +114,8 @@ namespace gps {
 
 					//diffuse texture
 					std::string diffuseTexturePath = materials[materialId].diffuse_texname;
-
-					if (!diffuseTexturePath.empty()) {
-
+					if (!diffuseTexturePath.empty())
+					{
 						gps::Texture currentTexture;
 						currentTexture = LoadTexture(basePath + diffuseTexturePath, "diffuseTexture");
 						textures.push_back(currentTexture);
@@ -136,9 +123,8 @@ namespace gps {
 
 					//specular texture
 					std::string specularTexturePath = materials[materialId].specular_texname;
-
-					if (!specularTexturePath.empty()) {
-
+					if (!specularTexturePath.empty())
+					{
 						gps::Texture currentTexture;
 						currentTexture = LoadTexture(basePath + specularTexturePath, "specularTexture");
 						textures.push_back(currentTexture);
@@ -154,9 +140,8 @@ namespace gps {
 	gps::Texture Model3D::LoadTexture(std::string path, std::string type) {
 
 			for (int i = 0; i < loadedTextures.size(); i++) {
-
-				if (loadedTextures[i].path == path)	{
-
+				if (loadedTextures[i].path == path)
+				{
 					//already loaded texture
 					return loadedTextures[i];
 				}
@@ -174,11 +159,9 @@ namespace gps {
 
 	// Reads the pixel data from an image file and loads it into the video memory
 	GLuint Model3D::ReadTextureFromFile(const char* file_name) {
-
 		int x, y, n;
 		int force_channels = 4;
 		unsigned char* image_data = stbi_load(file_name, &x, &y, &n, force_channels);
-
 		if (!image_data) {
 			fprintf(stderr, "ERROR: could not load %s\n", file_name);
 			return false;
@@ -197,12 +180,9 @@ namespace gps {
 		int half_height = y / 2;
 
 		for (int row = 0; row < half_height; row++) {
-
 			top = image_data + row * width_in_bytes;
 			bottom = image_data + (y - row - 1) * width_in_bytes;
-
 			for (int col = 0; col < width_in_bytes; col++) {
-
 				temp = *top;
 				*top = *bottom;
 				*bottom = temp;
@@ -237,14 +217,11 @@ namespace gps {
 	}
 
 	Model3D::~Model3D() {
-
         for (size_t i = 0; i < loadedTextures.size(); i++) {
-
             glDeleteTextures(1, &loadedTextures.at(i).id);
         }
 
         for (size_t i = 0; i < meshes.size(); i++) {
-
             GLuint VBO = meshes.at(i).getBuffers().VBO;
             GLuint EBO = meshes.at(i).getBuffers().EBO;
             GLuint VAO = meshes.at(i).getBuffers().VAO;

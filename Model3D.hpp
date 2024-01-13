@@ -12,7 +12,8 @@
 
 namespace gps {
 
-    class Model3D {
+    class Model3D
+    {
 
     public:
         ~Model3D();
